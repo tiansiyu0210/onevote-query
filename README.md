@@ -9,3 +9,9 @@
 3. mvn -U clean -Dkiptests
 4. docker build -t comsumer:latest .
 5. docker-compose up (make sure you did step 1-4 for command repo as well)
+
+
+
+====================
+swagger:
+http://localhost:8084/swagger-ui.html
