@@ -6,7 +6,7 @@
    -- docker rm $(docker ps -aq)
 2. remove docker image:
    -- docker rmi consumer
-3. mvn -U clean -Dkiptests
+3. mvn -U clean install -Dskiptests
 4. docker build -t consumer:latest .
 5. docker-compose up (make sure you did step 1-4 for command repo as well)
 
