@@ -1,6 +1,8 @@
-package com.onevote.query.demo;
+package com.onevote.query.config;
 
+import com.onevote.Constants;
 import com.onevote.User;
+import com.onevote.Vote;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -36,7 +38,7 @@ public class ReceiverConfig {
     }
 
     @Bean
-    public ConsumerFactory<String, User> consumerFactory() {
+    public ConsumerFactory<String, User> userConsumerFactory() {
         final JsonDeserializer<User> jsonDeserializer = new JsonDeserializer<>(User.class);
         jsonDeserializer.addTrustedPackages("*");
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
@@ -44,12 +46,43 @@ public class ReceiverConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, User> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, User> userKafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, User> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(userConsumerFactory());
 
         return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, Vote> voteConsumerFactory() {
+        final JsonDeserializer<Vote> jsonDeserializer = new JsonDeserializer<>(Vote.class);
+        jsonDeserializer.addTrustedPackages("*");
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
+                jsonDeserializer);
+    }
+
+    @Bean(name=Constants.USER_TOPIC)
+    public NewTopic userTopic() {
+        return new NewTopic(Constants.USER_TOPIC, 1, (short) 1);
+    }
+
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, Vote> voteKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Vote> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(voteConsumerFactory());
+
+        return factory;
+    }
+
+
+
+
+    @Bean(name=Constants.VOTE_TOPIC)
+    public NewTopic voteTopic() {
+        return new NewTopic(Constants.VOTE_TOPIC, 1, (short) 1);
     }
 
     @Bean
@@ -57,8 +90,4 @@ public class ReceiverConfig {
         return new StringJsonMessageConverter();
     }
 
-    @Bean
-    public NewTopic topic() {
-        return new NewTopic("users", 1, (short) 1);
-    }
 }
