@@ -51,6 +51,15 @@ services:
     - kafka:kafka
     - mongocontainer
 
+  auth:
+    image: auth
+    container_name: auth
+    restart: always
+    ports:
+    - 8086:8080
+    links:
+    - mongocontainer
+
   mongocontainer:
     image: mongo:latest
     ports:
