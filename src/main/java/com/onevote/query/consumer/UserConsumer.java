@@ -1,7 +1,8 @@
-package com.onevote.query.demo;
+package com.onevote.query.consumer;
 
 
 import com.onevote.User;
+import com.onevote.query.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 
 @Service
-public class Consumer {
+public class UserConsumer {
 
-    private final Logger logger = LoggerFactory.getLogger(Consumer.class);
+    private final Logger logger = LoggerFactory.getLogger(UserConsumer.class);
 
     @Autowired
     UserRepository userRepository;

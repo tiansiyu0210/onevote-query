@@ -1,4 +1,4 @@
-package com.onevote.query.demo;
+package com.onevote.query.config;
 
 import com.onevote.User;
 import org.apache.kafka.clients.admin.NewTopic;

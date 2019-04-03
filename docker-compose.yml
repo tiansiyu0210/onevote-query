@@ -34,7 +34,7 @@ services:
     - kafka
     restart: always
     ports:
-    - 8084:8080
+    - 8084:8084
     links:
     - kafka:kafka
     - mongocontainer
@@ -44,7 +44,7 @@ services:
     container_name: producer
     restart: always
     ports:
-    - 8085:8080
+    - 8085:8085
     depends_on:
     - kafka
     links:
