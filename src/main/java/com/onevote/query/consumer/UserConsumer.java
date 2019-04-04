@@ -21,7 +21,7 @@ public class UserConsumer {
 
     @KafkaListener(topics = "users", groupId = "group_id")
     public void consume(User user) throws IOException {
-        logger.info(String.format("#### -> Consumed user -> %s", user.toString()));
+        logger.info(String.format("#### -> Consumed security -> %s", user.toString()));
         userRepository.save(user);
     }
 }

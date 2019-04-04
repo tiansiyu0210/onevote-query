@@ -2,7 +2,7 @@ package com.onevote.query.service;
 
 import com.onevote.User;
 import com.onevote.query.repository.UserRepository;
-import com.onevote.query.user.CustomUserDetails;
+import com.onevote.query.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
