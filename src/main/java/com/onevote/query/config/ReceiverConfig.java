@@ -1,6 +1,12 @@
 package com.onevote.query.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.onevote.User;
+import com.onevote.event.VoteEvent;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -21,6 +27,16 @@ import java.util.Map;
 @EnableKafka
 public class ReceiverConfig {
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper()
+                .enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT )
+                .enable(DeserializationFeature.FAIL_ON_READING_DUP_TREE_KEY )
+                .registerModule(new ParameterNamesModule())
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule());
+    }
+
 
     @Bean
     public Map<String, Object> consumerConfigs() {
@@ -35,30 +51,56 @@ public class ReceiverConfig {
         return props;
     }
 
+    //User
     @Bean
-    public ConsumerFactory<String, User> consumerFactory() {
-        final JsonDeserializer<User> jsonDeserializer = new JsonDeserializer<>(User.class);
+    public ConsumerFactory<String, Object> consumerFactory() {
+        final JsonDeserializer<Object> jsonDeserializer = new JsonDeserializer<>(Object.class, objectMapper());
         jsonDeserializer.addTrustedPackages("*");
         return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
                 jsonDeserializer);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, User> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, User> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Object> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 
         return factory;
     }
 
+//    @Bean
+//    public NewTopic Topic() {
+//        return new NewTopic("users", 1, (short) 1);
+//    }
+
+    //vote
+//    @Bean
+//    public ConsumerFactory<String, VoteEvent> voteConsumerFactory() {
+//        final JsonDeserializer<VoteEvent> jsonDeserializer = new JsonDeserializer<>(VoteEvent.class);
+//        jsonDeserializer.addTrustedPackages("*");
+//        return new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(),
+//                jsonDeserializer);
+//    }
+//
+//    @Bean
+//    public ConcurrentKafkaListenerContainerFactory<String, VoteEvent> voteKafkaListenerContainerFactory() {
+//        ConcurrentKafkaListenerContainerFactory<String, VoteEvent> factory =
+//                new ConcurrentKafkaListenerContainerFactory<>();
+//        factory.setConsumerFactory(voteConsumerFactory());
+//
+//        return factory;
+//    }
+//
+//    @Bean
+//    public NewTopic topic() {
+//        return new NewTopic("users", 1, (short) 1);
+//    }
+
     @Bean
     public StringJsonMessageConverter jsonConverter() {
         return new StringJsonMessageConverter();
     }
 
-    @Bean
-    public NewTopic topic() {
-        return new NewTopic("users", 1, (short) 1);
-    }
+
 }
