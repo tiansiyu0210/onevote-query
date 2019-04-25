@@ -28,6 +28,7 @@ public class VoteConsumer {
             case CREATE_VOTE: voteRepository.save(voteEvent.getVote()); break;
             case UPDATE_VOTE: voteRepositoryCustom.updateVote(voteEvent.getVote()); break;
             case DELETE_VOTE: break;
+            case CREATE_OPTION: voteRepositoryCustom.updateVote(voteEvent.getVote()); break;
             default: throw new Exception("no action matched");
         }
     }
